@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  // Inicializa la conexión con tus datos
+  const supabase = supabase.createClient(
+    'https://hldemyynkevdtnodkgvy.supabase.co/https://hldemyynkevdtnodkgvy.supabase.co/',
+    'sb_publishable_a3cfXVUM54wgFEQtU2JGZQ_NkF3F607'
+  );
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS // Workspace</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
+    <style>
+        /* ==========================================
+           🎨 NEXUS VISUAL INTERFACE STYLESHEET
+           ========================================== */
+        :root {
+            --bg-main: #0a0b10;
+            --bg-card: #121420;
+            --bg-input: #1a1d29;
+            --border-color: #2d3142;
+            --accent: #5551ff;
+            --accent-glow: rgba(85, 81, 255, 0.3);
+            --text-main: #ffffff;
+            --text-muted: #8a8f98;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ⏳ Pantalla de Carga */
+        #nexusIntroGate {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #050609;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+        }
+
+        .nexus-logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .nexus-logo span { color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); }
+
+        .loader-track {
+            width: 220px; height: 4px;
+            background: #1a1d29;
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+        .loader-bar {
+            width: 40%; height: 100%;
+            background: var(--accent);
+            position: absolute;
+            animation: loading 1.6s infinite ease-in-out;
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        @keyframes loading {
+            0% { left: -40%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        /* 🎛️ Contenedores de Pantallas (Login/Menú) */
+        .screen-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .central-card {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-sizing: border-box;
+        }
+
+        .subtitle-center { color: var(--text-muted); margin-bottom: 25px; font-size: 0.95rem; }
+        .subtitle-left { color: var(--text-muted); text-align: left; margin-bottom: 25px; font-size: 0.9rem; }
+
+        /* 🔘 Botones */
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            width: 100%;
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn:hover { background: #443eff; }
+        .btn:active { transform: scale(0.98); }
+        .btn-secondary { background: #1e2235; border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: #262b42; }
+        .btn-danger { background: var(--danger); }
+        .btn-danger:hover { background: #d33333; }
+        .btn-sm { padding: 8px 16px; font-size: 0.85rem; width: auto; margin: 0; }
+
+        /* 📝 Inputs y Formularios */
+        .form-group {
+            text-align: left;
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: white;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* 🏢 Ecosistema Workspace Layout */
+        #screenGamingHub {
+            display: flex;
+            min-height: 100vh;
+            width: 100vw;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: var(--bg-card);
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #1e2235;
+            box-sizing: border-box;
+        }
+        
+        .sidebar-header { margin-bottom: 35px; }
+        .sidebar-header h3 { margin: 0 0 6px 0; font-size: 1.2rem; letter-spacing: 0.5px; }
+        
+        .status-badge {
+            color: var(--success);
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 14px;
+            text-align: left;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .sidebar-tab-btn.active, .sidebar-tab-btn:hover {
+            background: #1c1f33;
+            color: white;
+        }
+        .sidebar-tab-btn.active {
+            border-left: 3px solid var(--accent);
+        }
+
+        .main-viewport {
+            flex: 1;
+            padding: 40px;
+            background: var(--bg-main);
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .viewport-subview { width: 100%; }
+
+        /* 📦 Módulos e Tarjetas de Contenido */
+        .item-box {
+            background: var(--bg-card);
+            padding: 22px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #1e2235;
+            box-sizing: border-box;
+        }
+        
+        .split-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .box-desc {
+            color: var(--text-muted);
+            margin: 6px 0 0 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* 🔴 Indicadores de Estados de Operadores */
+        .operator-node-card { position: relative; }
+        .operator-node-card .indicator-dot {
+            display: inline-block;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            margin-left: 6px;
+        }
+        .online .indicator-dot { background: var(--success); }
+        .away .indicator-dot { background: #f59e0b; }
+        .dnd .indicator-dot { background: var(--danger); }
+
+        /* 🔔 UI Toaster System */
+        #nexusToast {
+            position: fixed;
+            bottom: 25px; right: 25px;
+            background: var(--accent);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 6px;
+            z-index: 10000;
+            font-weight: 600;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+        #nexusToast.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="nexusIntroGate">
+        <div class="nexus-logo">NEXUS <span>NETWORK</span></div>
+        <div class="loader-track"><div class="loader-bar"></div></div>
+    </div>
+
+    <div id="screenMainMenu" class="screen-container hidden">
+        <div class="central-card">
+            <div class="nexus-logo">NEX<span>US</span></div>
+            <p class="subtitle-center">Plataforma de despliegue y control de entornos.</p>
+            <button id="menuBtnGoLogin" class="btn"><i class='bx bx-log-in-circle'></i> Iniciar Sesión</button>
+            <button id="menuBtnGoRegister" class="btn btn-secondary"><i class='bx bx-user-plus' ></i> Registrar Nodo</button>
+        </div>
+    </div>
+
+    <div id="screenAuthForm" class="screen-container hidden">
+        <div class="central-card">
+            <h2 id="authInterfaceTitle">Acceso Core</h2>
+            <p id="authInterfaceSubtitle" class="subtitle-left">Autenticación de seguridad requerida.</p>
+            
+            <div id="formGroupNickname" class="form-group hidden">
+                <label>Nickname de Operador</label>
+                <input type="text" id="inputAuthNickname" placeholder="Ej. AlexLuau">
+            </div>
+            <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" id="inputAuthEmail" placeholder="operador@nexus.com">
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="inputAuthPassword" placeholder="••••••••">
+            </div>
+
+            <button id="btnExecuteAuth" class="btn">Confirmar Entrada</button>
+            <button id="btnCancelAuth" class="btn btn-secondary">Regresar</button>
+        </div>
+    </div>
+
+    <div id="screenGamingHub" class="hidden">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3 id="textHeaderUsername">Usuario</h3>
+                <span class="status-badge"><i class='bx bxs-circle'></i> CORE ONLINE</span>
+            </div>
+            <button class="sidebar-tab-btn active" data-target-view="viewDashboard">
+                <i class='bx bx-layer'></i> Panel Core
+            </button>
+            <button class="sidebar-tab-btn" data-target-view="viewSocial">
+                <i class='bx bx-pulse'></i> Red de Contactos
+            </button>
+            <button class="sidebar-tab-btn" data-target-view="viewSettings">
+                <i class='bx bx-slider-alt'></i> Personalización
+            </button>
+            <div class="sidebar-footer" style="margin-top: auto;">
+                <button id="btnHubLogout" class="btn btn-danger"><i class='bx bx-log-out'></i> Desconectar</button>
+            </div>
+        </div>
+
+        <div class="main-viewport">
+            
+            <div id="viewDashboard" class="viewport-subview">
+                <div class="item-box" style="border-left: 4px solid var(--accent);">
+                    <h2 id="textProfileNickname" style="margin: 0 0 6px 0; font-size: 1.6rem;">-</h2>
+                    <span id="textProfileUID" style="background: #1a1d29; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; color: var(--accent); font-weight: bold; letter-spacing: 0.5px;">NEX-0000-X</span>
+                    <p id="textProfileBio" style="color: var(--text-muted); margin-top: 15px; font-size: 0.95rem;">Sin descripción de entorno establecida.</p>
+                </div>
+
+                <h3 style="margin-top: 30px; font-size: 1.2rem; letter-spacing: 0.5px;">Entornos de Depuración</h3>
+                <div class="item-box split-box">
+                    <div>
+                        <strong style="font-size: 1.05rem;">Roblox Framework Node</strong>
+                        <p class="box-desc">Pruebas de sincronización y ejecución de scripts Luau de forma remota.</p>
+                    </div>
+                    <button class="btn-game-launcher btn btn-sm" data-game-title="Roblox Studio Core">Compilar Instancia</button>
+                </div>
+                <div class="item-box split-box">
+                    <div>
+                        <strong style="font-size: 1.05rem;">Minecraft Sandbox Runtime</strong>
+                        <p class="box-desc">Entorno controlado de optimización procedural y mapas de bloques lógicos.</p>
+                    </div>
+                    <button class="btn-game-launcher btn btn-sm" data-game-title="Minecraft Sandbox Core">Compilar Instancia</button>
+                </div>
+            </div>
+
+            <div id="viewSocial" class="viewport-subview hidden">
+                <h3 style="font-size: 1.2rem; letter-spacing: 0.5px;">Nodos Compartidos en Red (<span id="textFriendsCounter">0</span>)</h3>
+                <div class="item-box split-box" style="background: #161926;">
+                    <input type="text" id="inputFriendSearchName" placeholder="Buscar operador (Ej: x_luaudev, dashmaster...)" style="flex: 1; padding: 12px; background: var(--bg-input); border: 1px solid var(--border-color); color: white; border-radius: 6px;">
+                    <button id="btnTriggerAddFriend" class="btn btn-sm" style="height: 45px;"><i class='bx bx-plug'></i> Vincular Nodo</button>
+                </div>
+                <div id="containerFriendsDynamicList"></div>
+            </div>
+
+            <div id="viewSettings" class="viewport-subview hidden">
+                <h3 style="font-size: 1.2rem; letter-spacing: 0.5px;">Ajustes de Identidad Visual</h3>
+                <div class="item-box">
+                    <div class="form-group">
+                        <label>Cambiar Firma de Operador (Nickname)</label>
+                        <input type="text" id="inputSettingsNickname">
+                    </div>
+                    <div class="form-group">
+                        <label>Estado Personalizado / Biografía</label>
+                        <input type="text" id="inputSettingsBio">
+                    </div>
+                    <button id="btnSettingsSaveAll" class="btn btn-sm" style="margin-top: 10px;">Actualizar Parámetros</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="nexusToast"></div>
+
+    <script>
+    (function () {
+        "use strict";
+
+        let currentAuthMode = "login";
+        let activeUser = null;
+
+        // Base de datos de operadores para el buscador de nodos
+        const OPERATOR_DATABASE = {
+            "x_luaudev": { name: "X_LuauDev", role: "Lead Programmer", status: "online", bio: "Roblox Studio & Luau Environment Specialist." },
+            "dashmaster": { name: "DashMaster", role: "Level Designer", status: "away", bio: "Geometry Dash Core Engine & Mechanist." },
+            "studios_admin": { name: "Studios_Admin", role: "Root Administrator", status: "dnd", bio: "Nova Quest Studios Central Server Overseer." }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Animación y apagado de compuerta de carga inicial
+            const introGate = document.getElementById('nexusIntroGate');
+            setTimeout(() => {
+                if (introGate) {
+                    introGate.style.opacity = '0';
+                    introGate.style.transition = 'opacity 0.4s ease';
+                    setTimeout(() => {
+                        introGate.style.setProperty('display', 'none', 'important');
+                        checkSession(); // Carga las pantallas sin romper el renderizado
+                    }, 400);
+                }
+            }, 2000);
+
+            initNavigation();
+            initAuth();
+            initWorkspace();
+        });
+
+        function checkSession() {
+            const savedData = localStorage.getItem('nexus_session');
+            if (savedData) {
+                try {
+                    activeUser = JSON.parse(savedData);
+                    loadUserData();
+                    switchScreen('screenGamingHub');
+                } catch(e) {
+                    switchScreen('screenMainMenu');
+                }
+            } else {
+                switchScreen('screenMainMenu');
+            }
+        }
+
+        function switchScreen(screenId) {
+            const screens = ['screenMainMenu', 'screenAuthForm', 'screenGamingHub'];
+            screens.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (id === screenId) {
+                        el.classList.remove('hidden');
+                    } else {
+                        el.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        function initNavigation() {
+            const btnGoLogin = document.getElementById('menuBtnGoLogin');
+            const btnGoRegister = document.getElementById('menuBtnGoRegister');
+            const btnCancelAuth = document.getElementById('btnCancelAuth');
+            const groupNickname = document.getElementById('formGroupNickname');
+            const authTitle = document.getElementById('authInterfaceTitle');
+
+            btnGoLogin?.addEventListener('click', () => {
+                currentAuthMode = "login";
+                if(authTitle) authTitle.textContent = "Acceso Core";
+                groupNickname?.classList.add('hidden');
+                switchScreen('screenAuthForm');
+            });
+
+            btnGoRegister?.addEventListener('click', () => {
+                currentAuthMode = "register";
+                if(authTitle) authTitle.textContent = "Registrar Nodo";
+                groupNickname?.classList.remove('hidden');
+                switchScreen('screenAuthForm');
+            });
+
+            btnCancelAuth?.addEventListener('click', () => {
+                switchScreen('screenMainMenu');
+            });
+        }
+
+        function initAuth() {
+            const btnExecute = document.getElementById('btnExecuteAuth');
+            const inputEmail = document.getElementById('inputAuthEmail');
+            const inputPass = document.getElementById('inputAuthPassword');
+            const inputNick = document.getElementById('inputAuthNickname');
+
+            btnExecute?.addEventListener('click', () => {
+                const email = inputEmail ? inputEmail.value.trim() : "";
+                const password = inputPass ? inputPass.value.trim() : "";
+                const nickname = inputNick ? inputNick.value.trim() : "";
+
+                if (!email || !password || (currentAuthMode === 'register' && !nickname)) {
+                    showToast("Error: Faltan datos obligatorios.");
+                    return;
+                }
+
+                if (currentAuthMode === "register") {
+                    activeUser = {
+                        nickname: nickname,
+                        email: email,
+                        bio: "Sin descripción de entorno establecida.",
+                        uid: "NEX-" + Math.floor(1000 + Math.random() * 9000) + "-X",
+                        friends: []
+                    };
+                } else {
+                    activeUser = {
+                        nickname: email.split('@')[0],
+                        email: email,
+                        bio: "Entorno cargado mediante sesión local.",
+                        uid: "NEX-9981-X",
+                        friends: []
+                    };
+                }
+
+                localStorage.setItem('nexus_session', JSON.stringify(activeUser));
+                loadUserData();
+                switchScreen('screenGamingHub');
+                showToast(`Online: ${activeUser.nickname}`);
+            });
+        }
+
+        function loadUserData() {
+            if (!activeUser) return;
+            
+            const txtHeader = document.getElementById('textHeaderUsername');
+            const txtProfileNick = document.getElementById('textProfileNickname');
+            const txtUID = document.getElementById('textProfileUID');
+            const txtBio = document.getElementById('textProfileBio');
+            const inputSetNick = document.getElementById('inputSettingsNickname');
+            const inputSetBio = document.getElementById('inputSettingsBio');
+
+            if(txtHeader) txtHeader.textContent = activeUser.nickname;
+            if(txtProfileNick) txtProfileNick.textContent = activeUser.nickname;
+            if(txtUID) txtUID.textContent = activeUser.uid;
+            if(txtBio) txtBio.textContent = activeUser.bio;
+            
+            if(inputSetNick) inputSetNick.value = activeUser.nickname;
+            if(inputSetBio) inputSetBio.value = activeUser.bio;
+            
+            renderFriends();
+        }
+
+        function initWorkspace() {
+            document.getElementById('btnHubLogout')?.addEventListener('click', () => {
+                localStorage.removeItem('nexus_session');
+                activeUser = null;
+                switchScreen('screenMainMenu');
+                showToast("Firma desconectada.");
+            });
+
+            const tabButtons = document.querySelectorAll('.sidebar-tab-btn');
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const targetView = btn.getAttribute('data-target-view');
+                    document.querySelectorAll('.viewport-subview').forEach(v => {
+                        if (v.id === targetView) v.classList.remove('hidden');
+                        else v.classList.add('hidden');
+                    });
+                });
+            });
+
+            document.querySelectorAll('.btn-game-launcher').forEach(launcher => {
+                launcher.addEventListener('click', () => {
+                    const title = launcher.getAttribute('data-game-title');
+                    showToast(`Instanciando ${title}...`);
+                });
+            });
+
+            const btnAddFriend = document.getElementById('btnTriggerAddFriend');
+            const inputFriend = document.getElementById('inputFriendSearchName');
+
+            btnAddFriend?.addEventListener('click', () => {
+                const query = inputFriend ? inputFriend.value.trim().toLowerCase() : "";
+                if (!query || !activeUser) return;
+
+                if (OPERATOR_DATABASE.hasOwnProperty(query)) {
+                    const op = OPERATOR_DATABASE[query];
+                    if (!activeUser.friends) activeUser.friends = [];
+                    
+                    if (activeUser.friends.some(f => f.name.toLowerCase() === query)) {
+                        showToast("El nodo ya está en la red.");
+                        return;
+                    }
+
+                    activeUser.friends.push(op);
+                    localStorage.setItem('nexus_session', JSON.stringify(activeUser));
+                    renderFriends();
+                    if(inputFriend) inputFriend.value = "";
+                    showToast(`Conectado con: ${op.name}`);
+                } else {
+                    showToast("Error: Operador inexistente.");
+                }
+            });
+
+            document.getElementById('btnSettingsSaveAll')?.addEventListener('click', () => {
+                const newNick = document.getElementById('inputSettingsNickname').value.trim();
+                const newBio = document.getElementById('inputSettingsBio').value.trim();
+                
+                if (newNick && activeUser) {
+                    activeUser.nickname = newNick;
+                    activeUser.bio = newBio || "Sin descripción.";
+                    localStorage.setItem('nexus_session', JSON.stringify(activeUser));
+                    loadUserData();
+                    showToast("Firma del sistema actualizada.");
+                }
+            });
+        }
+
+        function renderFriends() {
+            const listWrapper = document.getElementById('containerFriendsDynamicList');
+            const counter = document.getElementById('textFriendsCounter');
+
+            if (!listWrapper) return;
+            listWrapper.innerHTML = "";
+
+            if (!activeUser || !activeUser.friends || activeUser.friends.length === 0) {
+                listWrapper.innerHTML = `<p class="box-desc" style="text-align:center; padding:20px;">No hay nodos vinculados en esta red.</p>`;
+                if(counter) counter.textContent = "0";
+                return;
+            }
+
+            if(counter) counter.textContent = activeUser.friends.length;
+
+            activeUser.friends.forEach((friend, index) => {
+                const card = document.createElement('div');
+                card.className = `item-box split-box operator-node-card ${friend.status}`;
+                card.innerHTML = `
+                    <div>
+                        <strong>${friend.name} <span class="indicator-dot"></span></strong>
+                        <p class="box-desc"><strong>${friend.role}</strong> - ${friend.bio}</p>
+                    </div>
+                    <button class="btn btn-sm btn-danger btn-purge-friend" data-index="${index}"><i class='bx bx-unlink'></i> Unlink</button>
+                `;
+                listWrapper.appendChild(card);
+            });
+
+            document.querySelectorAll('.btn-purge-friend').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = btn.getAttribute('data-index');
+                    activeUser.friends.splice(idx, 1);
+                    localStorage.setItem('nexus_session', JSON.stringify(activeUser));
+                    renderFriends();
+                    showToast("Nodo desvinculado.");
+                });
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('nexusToast');
+            if (!toast) return;
+            toast.textContent = message;
+            toast.classList.add('visible');
+            
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3000);
+        }
+    })();
+    </script>
+</body>
+</html>
