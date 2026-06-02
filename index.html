@@ -513,7 +513,7 @@
     setInterval(() => { const el = document.getElementById('clockDisplay'); if (el) el.textContent = new Date().toLocaleTimeString('es-PY', {hour12: false}) + ' CST'; }, 1000);
 
     // ── SUPABASE CONFIG ───────────────────────────
-    const CONFIG = { DB_URL: 'https://hldemyynkevdtnodkgvy.supabase.co', DB_KEY: 'sb_publishable_a3cfXVUM54wgFEQtU2JGZQ_NkF3F607' };
+    const CONFIG = { DB_URL: 'https://hldemyynkevdtnodkgvy.supabase.co/rest/v1/', DB_KEY: 'sb_publishable_a3cfXVUM54wgFEQtU2JGZQ_NkF3F607' };
     const supabase = window.supabase.createClient(CONFIG.DB_URL, CONFIG.DB_KEY);
 
     // ── STATE ──────────────────────────────────────
