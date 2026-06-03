@@ -413,7 +413,7 @@
 
             <div class="search-bar">
                 <i class='bx bx-search' style="color:var(--text-dim);font-size:1rem;"></i>
-                <input type="text" id="inputFriendSearchName" placeholder="Buscar operador real (Ej: tadeo914)">
+                <input type="text" id="inputFriendSearchName" placeholder="Buscar operador por correo (Ej: usuario@gmail.com)">
                 <button id="btnTriggerAddFriend" class="btn btn-primary btn-sm"><i class='bx bx-plug'></i> Vincular DB</button>
             </div>
 
@@ -624,7 +624,7 @@
                 if (isReg) {
                     const { data, error } = await supabase.auth.signUp({ email, password });
                     if (error) throw error;
-                    try { await supabase.from('usuarios').insert([{ id: data.user.id, nickname, bio: 'Operador recién inicializado.' }]); } catch(e) {}
+                    try { await supabase.from('usuarios').insert([{ id: data.user.id, nickname, email: email, bio: 'Operador recién inicializado.' }]); } catch(e) {}
                     this.ui.showToast('Nodo registrado. Revisa tu correo.', 'success'); this.ui.switchScreen('menu');
                 } else {
                     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -688,8 +688,8 @@
                 btn.innerHTML = `<i class='bx bx-loader-alt bx-spin'></i>`; btn.disabled = true;
 
                 try {
-                    // Buscar usuario por nickname en DB Real
-                    const { data: userToAdd, error: searchErr } = await supabase.from('usuarios').select('*').eq('nickname', query).single();
+                    // Buscar usuario por email en DB Real (Cambiado de nickname a email)
+                    const { data: userToAdd, error: searchErr } = await supabase.from('usuarios').select('*').eq('email', query).single();
                     if (searchErr || !userToAdd) { this.ui.showToast('Operador no encontrado en la DB.', 'error'); btn.innerHTML = `<i class='bx bx-plug'></i> Vincular DB`; btn.disabled = false; return; }
                     if (userToAdd.id === AppState.state.user.id) { this.ui.showToast('No puedes vincularte a ti mismo.', 'error'); btn.innerHTML = `<i class='bx bx-plug'></i> Vincular DB`; btn.disabled = false; return; }
 
